@@ -11,8 +11,15 @@ public class Commutation implements Runnable{
 	
 	private boolean canTransportPackage;
 
-	private void checkInputPortList() {
+	private int checkInputPortList(int currentPort) {
+		boolean foundAPackage = false;
 
+		while(!foundAPackage) {
+			InputPort port = inputPortList.get(currentPort)
+			if (port.getList.size() > 0) {
+				
+			}
+		}
 	}
 
 	public void chooseOutputPort() {
