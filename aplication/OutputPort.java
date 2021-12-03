@@ -14,6 +14,8 @@ public class OutputPort implements Runnable{
 	private Integer retransmissionProbability;
 	private SplittableRandom random;
 
+	// private BufferedWriter log
+
 	public OutputPort(String portID, Integer size, Integer packageFowardProbability, Integer packageTransmittionDelay,
 			Integer retransmissionProbability) {
 		this.portID = portID;
@@ -87,9 +89,13 @@ public class OutputPort implements Runnable{
 		return list;
 	}
 
-	
-	public void insertPackageInList(Package pack) {
-		list.add(pack);
+	//mudar
+	public boolean insertPackageInList(Package pack) {
+		if (size > list.size()) {
+			list.add(pack);
+			return true;
+		}
+		return false;
 	}
 
 	private void transmitPackage() {
@@ -129,6 +135,16 @@ public class OutputPort implements Runnable{
 	
 	@Override
 	public void run() {
+
+		while(true) {
+			try {
+				transmitPackage();
+				Thread.sleep(packageTransmittionDelay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		//nonTreatedPackages();
 	}
 
 }

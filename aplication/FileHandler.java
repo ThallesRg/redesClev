@@ -2,9 +2,14 @@ package aplication;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,10 +87,17 @@ public class FileHandler {
 
     public static BufferedWriter createLogFile(String name) {
         try {
-            FileWriter fileWriter = new FileWriter("src/logs/" + name + ".txt");
+            Path path = Paths.get("./logs/"+ name + ".txt");
+            if (Files.exists(path)){
+                FileWriter fileWriter = new FileWriter("./logs/" + name + ".txt", true);
+                BufferedWriter out = new BufferedWriter(fileWriter);
+                return out;
+            } else {
+                FileWriter fileWriter = new FileWriter("./logs/" + name + ".txt");
+                BufferedWriter out = new BufferedWriter(fileWriter);
+                return out;
+            }
 
-            BufferedWriter out = new BufferedWriter(fileWriter);
-            return out;
 
         } catch (IOException e) {
             e.printStackTrace();

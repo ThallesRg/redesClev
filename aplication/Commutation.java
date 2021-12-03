@@ -3,6 +3,7 @@ package aplication;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SplittableRandom;
+import java.io.BufferedWriter;
 
 public class Commutation implements Runnable{
 
@@ -13,11 +14,16 @@ public class Commutation implements Runnable{
 
 	private boolean canTransportPackage;
 
+	private BufferedWriter logNaoTratados = FileHandler.createLogFile("log_nao_tratados_comutador");
+
 	private int checkInputPortList(int currentPort) {
 		boolean foundAPackage = false;
 
 		while(!foundAPackage) {
 			currentPort ++;
+			if (currentPort <= inputPortList.size()) {
+				currentPort = 0;
+			}
 			InputPort port = inputPortList.get(currentPort);
 			if (port.getList().size() > 0) {
 				foundAPackage = true;
@@ -29,13 +35,13 @@ public class Commutation implements Runnable{
 
 	private int chooseOutputPort() {
 		
-		int x = random.nextInt(1, 101);
+		int randomAux = random.nextInt(1, 101);
 		int probability = 0;
 
-		for(int i = 0; i <outputPortList.size(); i++){
+		for(int i = 0; i < outputPortList.size(); i++){
 			probability += outputPortList.get(i).getPackageFowardProbability();
 
-			if (x <= probability) {
+			if (randomAux <= probability) {
 				return i;
 			}
 		}
@@ -48,27 +54,51 @@ public class Commutation implements Runnable{
 		OutputPort output = outputPortList.get(outputPort);
 
 		Package pack = input.removePackage();
-		if (output.getSize() > output.getList().size()) {
-			output.insertPackageInList(pack);
+		pack.updateTime();
+		if (output.insertPackageInList(pack)) {
 			createLog(pack);
 		} else {
-			discardPackage(pack);
+			discardPackage(pack, output);
 		}
 	}
 
-	private void discardPackage(Package pack) {
-		createLog(pack);
+	private void discardPackage(Package pack, OutputPort port) {
+		String fileName = "log-descartado-fila-de-saida-" + port.getPortID() + "-cheia";
+		BufferedWriter logDiscarted = FileHandler.createLogFile(fileName);
 	}
 
 	private void createLog(Package pack) {
 		
 	}
+
+	private void nonTreatedPackages() {
+		for(InputPort port : inputPortList) {
+			for(Package pack : port.getList()) {
+				FileHandler.writeLog(logNaoTratados, pack.toString());
+			}
+		}
+	}
 	
 	@Override
 	public void run() {
+		int input = -1;
+		int output;
+
 		while(true) {
-			int input = 
+			input = checkInputPortList(input);
+			output = chooseOutputPort();
+			transportPackage(input, output);
+
+			try {
+				Thread.sleep(switchDelay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+
+		//nonTreatedPackages();
+		// Fazer isso pra cada log
+		//FileHandler.closeLogFile( logNaoTratados );
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SplittableRandom;
 import java.lang.Thread;
+import java.io.BufferedWriter;
 
 public class InputPort implements Runnable{
 
@@ -15,8 +16,12 @@ public class InputPort implements Runnable{
 	private Integer numberOfPackagesCreated;
 	private SplittableRandom random;
 
-	//private BufferedWriter logCreateds = FileHandler.createLogFile("log_criados");
+	
+	private BufferedWriter logCreated = FileHandler.createLogFile("log-criados-com-sucesso-" + portID);
+	private BufferedWriter logDescarted = FileHandler.createLogFile("log-descartados-" + portID);
+	private BufferedWriter logQueue = FileHandler.createLogFile("log-descartados-fila-longa-" + portID);
 
+	
 	/*
 	Um pacote virtual gerado pela porta de entrada será inserido na fila de entrada associada àquela porta. Porém, caso a fila de entrada esteja cheia, o
 	pacote gerado deve ser descartado. Assim, cada porta de entrada deve gerar e manter três diferentes
@@ -102,6 +107,7 @@ public class InputPort implements Runnable{
 			return;
 		} else if ( list.size() >= size ) {
 			//log lista cheia
+			return;
 		}
 		insertPackage(pack);
 		//FileHandler.writeLog( logCreateds, "Pacote x criado" );
