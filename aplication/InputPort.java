@@ -18,7 +18,7 @@ public class InputPort implements Runnable{
 
 	
 	private BufferedWriter logCreated = FileHandler.createLogFile("log-criados-com-sucesso-" + portID);
-	private BufferedWriter logDescarted = FileHandler.createLogFile("log-descartados-" + portID);
+	private BufferedWriter logDiscarted = FileHandler.createLogFile("log-descartados-" + portID);
 	private BufferedWriter logQueue = FileHandler.createLogFile("log-descartados-fila-longa-" + portID);
 
 	
@@ -49,51 +49,13 @@ public class InputPort implements Runnable{
 	}
 
 
-
-	public void setPortID(String portID) {
-		this.portID = portID;
-	}
-
-
-
 	public List<Package> getList() {
 		return list;
 	}
 	
 
-
 	public Integer getSize() {
 		return size;
-	}
-
-
-
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-
-
-
-	public Integer getPackageGenerationDelay() {
-		return packageGenerationDelay;
-	}
-
-
-
-	public void setPackageGenerationDelay(Integer packageGenerationDelay) {
-		this.packageGenerationDelay = packageGenerationDelay;
-	}
-
-
-
-	public Integer getDropProbability() {
-		return dropProbability;
-	}
-
-
-
-	public void setDropProbability(Integer dropProbability) {
-		this.dropProbability = dropProbability;
 	}
 
 
@@ -103,18 +65,14 @@ public class InputPort implements Runnable{
 		Package pack = new Package(portID + "" + numberOfPackagesCreated); 
 		boolean isPackageDiscarded = random.nextInt(1, 101) <= dropProbability;
 		if (isPackageDiscarded) {
-			discardPackage(pack);
+			FileHandler.writeLog(logDiscarted, pack.toString());
 			return;
-		} else if ( list.size() >= size ) {
-			//log lista cheia
+		} else if (list.size() >= size) {
+			FileHandler.writeLog(logQueue, pack.toString());
 			return;
 		}
 		insertPackage(pack);
-		//FileHandler.writeLog( logCreateds, "Pacote x criado" );
-	}
-	
-	private void discardPackage(Package pack) {
-		System.out.println("Descartando pacote " + pack);
+		FileHandler.writeLog(logCreated, pack.toString());
 	}
 
 	private void insertPackage(Package pack) {

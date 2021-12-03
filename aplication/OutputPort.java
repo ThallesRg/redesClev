@@ -3,6 +3,7 @@ package aplication;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SplittableRandom;
+import java.io.BufferedWriter;
 
 public class OutputPort implements Runnable{
 
@@ -14,7 +15,9 @@ public class OutputPort implements Runnable{
 	private Integer retransmissionProbability;
 	private SplittableRandom random;
 
-	// private BufferedWriter log
+	private BufferedWriter logSuccess = FileHandler.createLogFile("log-enviados-com-sucesso-" + portID);
+	private BufferedWriter logRetransmitted = FileHandler.createLogFile("log-retransmitidos-" + portID);
+	private BufferedWriter logNonTreated = FileHandler.createLogFile("log-nao-tratados-fila-saida-" + portID);
 
 	public OutputPort(String portID, Integer size, Integer packageFowardProbability, Integer packageTransmittionDelay,
 			Integer retransmissionProbability) {
@@ -104,7 +107,7 @@ public class OutputPort implements Runnable{
 			boolean isPackageTransmited = random.nextInt(1, 101) <= (100 - retransmissionProbability);
 			
 			if(isPackageTransmited) {
-				createLog(pack);
+				FileHandler.writeLog(logSuccess, pack.toString());
 			} else {
 				retransmitPackage(pack);
 			}
