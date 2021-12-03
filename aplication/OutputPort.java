@@ -2,6 +2,7 @@ package aplication;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SplittableRandom;
 
 public class OutputPort implements Runnable{
 
@@ -11,6 +12,7 @@ public class OutputPort implements Runnable{
 	private Integer packageFowardProbability;
 	private Integer packageTransmittionDelay;
 	private Integer retransmissionProbability;
+	private SplittableRandom random;
 
 	public OutputPort(String portID, Integer size, Integer packageFowardProbability, Integer packageTransmittionDelay,
 			Integer retransmissionProbability) {
@@ -85,7 +87,10 @@ public class OutputPort implements Runnable{
 		return list;
 	}
 
-
+	
+	public void insertPackageInList(Package pack) {
+		list.add(pack);
+	}
 
 	private void transmitPackage() {
 		if (list.size() > 0) {
@@ -95,7 +100,7 @@ public class OutputPort implements Runnable{
 			if(isPackageTransmited) {
 				createLog(pack);
 			} else {
-				retransmitPackage(pack)
+				retransmitPackage(pack);
 			}
 		}
 	}
@@ -106,15 +111,15 @@ public class OutputPort implements Runnable{
 
 		while(!isPackageTransmited) {
 			retransmission ++;
-			isPackageTransmited = random.nextInt(1, 101) <= (100 - (retransmissionProbability/Math.pow(2, retransmission)))
+			isPackageTransmited = random.nextInt(1, 101) <= (100 - (retransmissionProbability/Math.pow(2, retransmission)));
 		}
 
-		createLog(pack)
+		createLog(pack);
 	}
 
 	private void nonTreatedPackages() {
 		for(Package pack : list) {
-			createLog(pack)
+			createLog(pack);
 		}
 	}
 

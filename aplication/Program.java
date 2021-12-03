@@ -4,8 +4,10 @@ import java.io.FileNotFoundException;
 
 public class Program {
 	public static void main(String[] args) throws FileNotFoundException {
-		InputPort ip = new InputPort("A:", 20, 1000, 0);
-		Thread thread = new Thread(ip);
-		thread.start();
+
+		FileResponse fp = FileHandler.readpecificationFile("file");
+		System.out.println(fp.getSwithFabric());
+		System.out.println(fp.getInputList());
+		System.out.println(fp.getOutputList());
 	}
 }

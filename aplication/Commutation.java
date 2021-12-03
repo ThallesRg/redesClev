@@ -2,57 +2,72 @@ package aplication;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SplittableRandom;
 
 public class Commutation implements Runnable{
 
 	private List<InputPort> inputPortList = new ArrayList<>();
 	private List<OutputPort> outputPortList =  new ArrayList<>();
 	private Integer switchDelay;
-	
+	private SplittableRandom random;
+
 	private boolean canTransportPackage;
 
 	private int checkInputPortList(int currentPort) {
 		boolean foundAPackage = false;
 
 		while(!foundAPackage) {
-			InputPort port = inputPortList.get(currentPort)
-			if (port.getList.size() > 0) {
-				
+			currentPort ++;
+			InputPort port = inputPortList.get(currentPort);
+			if (port.getList().size() > 0) {
+				foundAPackage = true;
 			}
 		}
+
+		return currentPort;
 	}
 
-	public void chooseOutputPort() {
+	private int chooseOutputPort() {
 		
+		int x = random.nextInt(1, 101);
+		int probability = 0;
+
+		for(int i = 0; i <outputPortList.size(); i++){
+			probability += outputPortList.get(i).getPackageFowardProbability();
+
+			if (x <= probability) {
+				return i;
+			}
+		}
+
+		return 999999999;
 	}
 	
-	synchronized public void transportPackage() {
-		/*
-		canTransportPortPackage = false;
+	private void transportPackage(int inputPort, int outputPort) {
+		InputPort input = inputPortList.get(inputPort);
+		OutputPort output = outputPortList.get(outputPort);
 
-		// ...
-
-		try {
-			wait(switchDelay);
-		} catch(InterruptedException ex) {
-			// ...
+		Package pack = input.removePackage();
+		if (output.getSize() > output.getList().size()) {
+			output.insertPackageInList(pack);
+			createLog(pack);
+		} else {
+			discardPackage(pack);
 		}
-		canTransportPortPackage = true;
-		*/
 	}
 
-	private void discardPackage() {
-
+	private void discardPackage(Package pack) {
+		createLog(pack);
 	}
 
-	private void createLog() {
+	private void createLog(Package pack) {
 		
 	}
 	
 	@Override
 	public void run() {
-		while(canTransportPackage) {
-			checkInputPortList();
+		while(true) {
+			int input = 
 		}
 	}
 
