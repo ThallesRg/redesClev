@@ -88,11 +88,38 @@ public class OutputPort implements Runnable{
 
 
 	private void transmitPackage() {
-		
+		if (list.size() > 0) {
+			Package pack = list.remove(0);
+			boolean isPackageTransmited = random.nextInt(1, 101) <= (100 - retransmissionProbability);
+			
+			if(isPackageTransmited) {
+				createLog(pack);
+			} else {
+				retransmitPackage(pack)
+			}
+		}
 	}
 
-	public void createLog() {
+	private void retransmitPackage(Package pack) {
+		int retransmission = 0;
+		boolean isPackageTransmited = false;
 
+		while(!isPackageTransmited) {
+			retransmission ++;
+			isPackageTransmited = random.nextInt(1, 101) <= (100 - (retransmissionProbability/Math.pow(2, retransmission)))
+		}
+
+		createLog(pack)
+	}
+
+	private void nonTreatedPackages() {
+		for(Package pack : list) {
+			createLog(pack)
+		}
+	}
+
+	public void createLog(Package pack) {
+		
 	}
 	
 	@Override
