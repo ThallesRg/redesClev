@@ -15,6 +15,7 @@ public class Commutation implements Runnable{
 	private boolean canTransportPackage;
 
 	private BufferedWriter logNaoTratados = FileHandler.createLogFile("log_nao_tratados_comutador");
+	private BufferedWriter logNaoTratados = FileHandler.createLogFile("log_nao_tratados_comutador");
 
 	private int checkInputPortList(int currentPort) {
 		boolean foundAPackage = false;
