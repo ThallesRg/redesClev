@@ -12,7 +12,5 @@ public class Program {
 		Arrays.stream(new File("./logs/").listFiles()).forEach(File::delete);
 
 		
-		
-
 	}
 }

@@ -123,18 +123,15 @@ public class OutputPort implements Runnable{
 			isPackageTransmited = random.nextInt(1, 101) <= (100 - (retransmissionProbability/Math.pow(2, retransmission)));
 		}
 
-		createLog(pack);
+		FileHandler.writeLog(logRetransmitted, pack.toString());
 	}
 
 	private void nonTreatedPackages() {
 		for(Package pack : list) {
-			createLog(pack);
+			FileHandler.writeLog(logNonTreated, pack.toString());
 		}
 	}
 
-	public void createLog(Package pack) {
-		
-	}
 	
 	@Override
 	public void run() {

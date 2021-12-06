@@ -12,9 +12,7 @@ public class Commutation implements Runnable{
 	private Integer switchDelay;
 	private SplittableRandom random;
 
-	private boolean canTransportPackage;
-
-	private BufferedWriter logNaoTratados = FileHandler.createLogFile("log_nao_tratados_comutador");
+	private BufferedWriter logSuccess = FileHandler.createLogFile("log_sucesso_comutador");
 	private BufferedWriter logNaoTratados = FileHandler.createLogFile("log_nao_tratados_comutador");
 
 	private int checkInputPortList(int currentPort) {
@@ -57,7 +55,7 @@ public class Commutation implements Runnable{
 		Package pack = input.removePackage();
 		pack.updateTime();
 		if (output.insertPackageInList(pack)) {
-			createLog(pack);
+			FileHandler.writeLog(logSuccess, pack.toString());
 		} else {
 			discardPackage(pack, output);
 		}
@@ -66,10 +64,7 @@ public class Commutation implements Runnable{
 	private void discardPackage(Package pack, OutputPort port) {
 		String fileName = "log-descartado-fila-de-saida-" + port.getPortID() + "-cheia";
 		BufferedWriter logDiscarted = FileHandler.createLogFile(fileName);
-	}
-
-	private void createLog(Package pack) {
-		
+		FileHandler.writeLog(logDiscarted, pack.toString());
 	}
 
 	private void nonTreatedPackages() {
