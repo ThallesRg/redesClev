@@ -26,7 +26,6 @@ public class Package {
 	public String toString() {
 		return name + " " + formattedDate;
 	}
-	
-	
+
 	
 }

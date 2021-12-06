@@ -5,26 +5,37 @@ import java.util.List;
 import java.util.SplittableRandom;
 import java.io.BufferedWriter;
 
-public class Commutation implements Runnable{
+public class Commutator extends Thread {
 
-	private List<InputPort> inputPortList = new ArrayList<>();
-	private List<OutputPort> outputPortList =  new ArrayList<>();
+	private List<InputPort> inputPortList;
+	private List<OutputPort> outputPortList;
 	private Integer switchDelay;
 	private SplittableRandom random;
 
-	private BufferedWriter logSuccess = FileHandler.createLogFile("log_sucesso_comutador");
-	private BufferedWriter logNaoTratados = FileHandler.createLogFile("log_nao_tratados_comutador");
+	private BufferedWriter logSuccess;
+	private BufferedWriter logNaoTratados; 
+
+	
+	
+	public Commutator(List<InputPort> inputPortList, List<OutputPort> outputPortList, Integer switchDelay) {
+		this.inputPortList = inputPortList;
+		this.outputPortList = outputPortList;
+		this.switchDelay = switchDelay;
+		this.random = new SplittableRandom();
+		this.logSuccess = FileHandler.createLogFile("log_sucesso_comutador");
+		this.logNaoTratados = FileHandler.createLogFile("log_nao_tratados_comutador");
+	}
 
 	private int checkInputPortList(int currentPort) {
 		boolean foundAPackage = false;
 
-		while(!foundAPackage) {
-			currentPort ++;
-			if (currentPort <= inputPortList.size()) {
+		while (!foundAPackage) {
+			currentPort++;
+			if (currentPort >= inputPortList.size()) {
 				currentPort = 0;
 			}
 			InputPort port = inputPortList.get(currentPort);
-			if (port.getList().size() > 0) {
+			if (!port.getList().isEmpty()) {
 				foundAPackage = true;
 			}
 		}
@@ -33,11 +44,11 @@ public class Commutation implements Runnable{
 	}
 
 	private int chooseOutputPort() {
-		
+
+
 		int randomAux = random.nextInt(1, 101);
 		int probability = 0;
-
-		for(int i = 0; i < outputPortList.size(); i++){
+		for (int i = 0; i < outputPortList.size(); i++) {
 			probability += outputPortList.get(i).getPackageFowardProbability();
 
 			if (randomAux <= probability) {
@@ -47,7 +58,7 @@ public class Commutation implements Runnable{
 
 		return 999999999;
 	}
-	
+
 	private void transportPackage(int inputPort, int outputPort) {
 		InputPort input = inputPortList.get(inputPort);
 		OutputPort output = outputPortList.get(outputPort);
@@ -65,24 +76,29 @@ public class Commutation implements Runnable{
 		String fileName = "log-descartado-fila-de-saida-" + port.getPortID() + "-cheia";
 		BufferedWriter logDiscarted = FileHandler.createLogFile(fileName);
 		FileHandler.writeLog(logDiscarted, pack.toString());
+		FileHandler.closeLogFile(logDiscarted);
 	}
 
 	private void nonTreatedPackages() {
-		for(InputPort port : inputPortList) {
-			for(Package pack : port.getList()) {
+		for (InputPort port : inputPortList) {
+			for (Package pack : port.getList()) {
 				FileHandler.writeLog(logNaoTratados, pack.toString());
 			}
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		int input = -1;
 		int output;
+		System.out.println("Rodando Buffer...");
 
-		while(true) {
+
+		while (Utilities.isRunning()) {
 			input = checkInputPortList(input);
+			System.out.println("Input: " + input);
 			output = chooseOutputPort();
+			System.out.println("Output: " + output);
 			transportPackage(input, output);
 
 			try {
@@ -91,10 +107,14 @@ public class Commutation implements Runnable{
 				e.printStackTrace();
 			}
 		}
+		
 
-		//nonTreatedPackages();
+		nonTreatedPackages();
 		// Fazer isso pra cada log
-		//FileHandler.closeLogFile( logNaoTratados );
+		// FileHandler.closeLogFile( logNaoTratados );
+		FileHandler.closeLogFile(logSuccess);
+		FileHandler.closeLogFile(logNaoTratados);
+		System.out.println("Parando Buffer...");
 	}
 
 }

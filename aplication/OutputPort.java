@@ -3,22 +3,24 @@ package aplication;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SplittableRandom;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.io.BufferedWriter;
 
 public class OutputPort implements Runnable{
 
 	private String portID;
-	private List<Package> list = new ArrayList<>();
+	//private List<Package> list = new ArrayList<>();
+	private ConcurrentLinkedQueue<Package> list = new ConcurrentLinkedQueue<Package>();
 	private Integer size;
 	private Integer packageFowardProbability;
 	private Integer packageTransmittionDelay;
 	private Integer retransmissionProbability;
 	private SplittableRandom random;
 
-	private BufferedWriter logSuccess = FileHandler.createLogFile("log-enviados-com-sucesso-" + portID);
-	private BufferedWriter logRetransmitted = FileHandler.createLogFile("log-retransmitidos-" + portID);
-	private BufferedWriter logNonTreated = FileHandler.createLogFile("log-nao-tratados-fila-saida-" + portID);
-
+	private BufferedWriter logSuccess;
+	private BufferedWriter logRetransmitted;
+	private BufferedWriter logNonTreated;
+	
 	public OutputPort(String portID, Integer size, Integer packageFowardProbability, Integer packageTransmittionDelay,
 			Integer retransmissionProbability) {
 		this.portID = portID;
@@ -26,6 +28,9 @@ public class OutputPort implements Runnable{
 		this.packageFowardProbability = packageFowardProbability;
 		this.packageTransmittionDelay = packageTransmittionDelay;
 		this.retransmissionProbability = retransmissionProbability;
+		this.logSuccess = FileHandler.createLogFile("log-enviados-com-sucesso-" + portID);
+		this.logRetransmitted = FileHandler.createLogFile("log-retransmitidos-" + portID);
+		this.logNonTreated = FileHandler.createLogFile("log-nao-tratados-fila-saida-" + portID);
 	}
 	
 	public String getPortID() {
@@ -88,7 +93,7 @@ public class OutputPort implements Runnable{
 
 
 
-	public List<Package> getList() {
+	public ConcurrentLinkedQueue<Package> getList() {
 		return list;
 	}
 
@@ -103,7 +108,7 @@ public class OutputPort implements Runnable{
 
 	private void transmitPackage() {
 		if (list.size() > 0) {
-			Package pack = list.remove(0);
+			Package pack = list.poll();
 			boolean isPackageTransmited = random.nextInt(1, 101) <= (100 - retransmissionProbability);
 			
 			if(isPackageTransmited) {
@@ -136,7 +141,7 @@ public class OutputPort implements Runnable{
 	@Override
 	public void run() {
 
-		while(true) {
+		while(Utilities.isRunning()) {
 			try {
 				transmitPackage();
 				Thread.sleep(packageTransmittionDelay);
@@ -144,7 +149,11 @@ public class OutputPort implements Runnable{
 				e.printStackTrace();
 			}
 		}
-		//nonTreatedPackages();
+
+		FileHandler.closeLogFile(logSuccess);
+		FileHandler.closeLogFile(logNonTreated);
+		FileHandler.closeLogFile(logRetransmitted);
+		System.out.println("Rodando...");
 	}
 
 }

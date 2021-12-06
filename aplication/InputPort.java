@@ -3,13 +3,15 @@ package aplication;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SplittableRandom;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.lang.Thread;
 import java.io.BufferedWriter;
 
 public class InputPort implements Runnable{
 
 	private String portID;
-	private List<Package> list = new ArrayList<>();
+	//private List<Package> list = new ArrayList<>();
+	private ConcurrentLinkedQueue<Package> list = new ConcurrentLinkedQueue<Package>();
 	private Integer size;
 	private Integer packageGenerationDelay;
 	private Integer dropProbability;
@@ -17,9 +19,9 @@ public class InputPort implements Runnable{
 	private SplittableRandom random;
 
 	
-	private BufferedWriter logCreated = FileHandler.createLogFile("log-criados-com-sucesso-" + portID);
-	private BufferedWriter logDiscarted = FileHandler.createLogFile("log-descartados-" + portID);
-	private BufferedWriter logQueue = FileHandler.createLogFile("log-descartados-fila-longa-" + portID);
+	private BufferedWriter logCreated;
+	private BufferedWriter logDiscarted; 
+	private BufferedWriter logQueue; 
 
 	
 	/*
@@ -40,8 +42,10 @@ public class InputPort implements Runnable{
 		this.dropProbability = dropProbability;
 		this.numberOfPackagesCreated = 0;
 		this.random = new SplittableRandom();
+		this.logCreated = FileHandler.createLogFile("log-criados-com-sucesso-" + portID);
+		this.logDiscarted = FileHandler.createLogFile("log-descartados-" + portID);
+		this.logQueue = FileHandler.createLogFile("log-descartados-fila-longa-" + portID);
 	}
-	
 	
 
 	public String getPortID() {
@@ -49,7 +53,7 @@ public class InputPort implements Runnable{
 	}
 
 
-	public List<Package> getList() {
+	public ConcurrentLinkedQueue<Package> getList() {
 		return list;
 	}
 	
@@ -80,13 +84,21 @@ public class InputPort implements Runnable{
 	}
 	
 	public Package removePackage() {
-		return list.remove(0);
+		return list.poll();
 	}
 	
+	
+	
+	@Override
+	public String toString() {
+		return "InputPort [portID=" + portID + ", list=" + list + ", size=" + size + "]";
+	}
+
+
 	@Override
 	public void run() {
 
-		while(true) {
+		while(Utilities.isRunning()) {
 			try {
 				createPackage();
 				Thread.sleep(packageGenerationDelay);
@@ -95,6 +107,10 @@ public class InputPort implements Runnable{
 				e.printStackTrace();
 			}
 		}
+		
+		FileHandler.closeLogFile(logCreated);
+		FileHandler.closeLogFile(logDiscarted);
+		FileHandler.closeLogFile(logQueue);
 	}
 
 }
