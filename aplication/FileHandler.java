@@ -2,16 +2,14 @@ package aplication;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.lang.instrument.IllegalClassFormatException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import aplication.exception.FileFormatException;
 
 public class FileHandler {
 
@@ -52,31 +50,26 @@ public class FileHandler {
 
             while ((line = specificationFile.readLine()) != null) {
                 String[] array = line.split(" ");
-                List<String> listAux = new ArrayList<>();
 
                 switch (array[0]) {
                     case "switch-fabric:":
-                        fileResponse.setSwithFabric(Integer.parseInt(array[1]));
+                        fileResponse.setSwitchFabric(array[1]);
                         break;
                     case "input:":
-                        for (int i = 1; i < array.length; i++) {
-                            listAux.add(array[i]);
-                        }
-                        fileResponse.addInputList(listAux);
+                        fileResponse.addInputPort(array[1], array[2], array[3], array[4]);
                         break;
                     case "output:":
-                        for (int i = 1; i < array.length; i++) {
-                            listAux.add(array[i]);
-                        }
-                        fileResponse.addOutputList(listAux);
+                        fileResponse.addOutputPort(array[1], array[2], array[3], array[4], array[5]);
                         break;
                     default:
-                        System.out.println("File with wrong formatting");
-                        break;
+                        throw new FileFormatException("Oii");
+                        //System.out.println("File with wrong formatting");
+                        //wrongFormat = true;
                 }
             }
 
             specificationFile.close();
+            fileResponse.checkSumFowardProbability();
 
         } catch (IOException e) {
             e.printStackTrace();

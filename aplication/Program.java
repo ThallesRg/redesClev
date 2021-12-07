@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Program {
@@ -14,6 +13,7 @@ public class Program {
 
 		//Deletando todos os arquivos da pasta logs
 		Arrays.stream(new File("./logs/").listFiles()).forEach(File::delete);
+		/*
 		Utilities.setRunning(true);
 
 		InputPort inputPort = new InputPort("A_", 5, 100, 50);
@@ -40,15 +40,27 @@ public class Program {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-
-		
-		/*
-		Utilities.setRunning(true);
-		InputPort inputPort = new InputPort("A_", 5, 100, 50);
-		Thread threadInput = new Thread(inputPort);
-		threadInput.start();
 		*/
+
+
+		List<Thread> threads = new ArrayList<Thread>();
+		FileResponse fileResponse = FileHandler.readpecificationFile("file");
+		for (OutputPort outputPort : fileResponse.getOutputPorts()) {
+			threads.add(new Thread(outputPort));
+		}
+
+		for (InputPort inputPort : fileResponse.getInputPorts()) {
+			threads.add(new Thread(inputPort));
+		}
+
+		for (Thread thread : threads) {
+			thread.start();
+		}
+
+		System.out.println(file.getSwithFabric());
+		System.out.println(file.getInputList());
+		System.out.println(file.getOutputList());
+
 	}
 
 

@@ -5,30 +5,54 @@ import java.util.List;
 
 public class FileResponse {
 
-    private Integer swithFabric;
-    private List<List<String>> inputList = new ArrayList<>();
-    private List<List<String>> outputList = new ArrayList<>();
+    private String swithFabric;
+	private List<InputPort> inputPorts = new ArrayList<>();
+    private List<OutputPort> outputPorts = new ArrayList<>();
 	
-    public List<List<String>> getInputList() {
-		return inputList;
-	}
-	
-	public Integer getSwithFabric() {
+    public String getSwithFabric() {
 		return swithFabric;
 	}
-	public List<List<String>> getOutputList() {
-		return outputList;
+	public List<InputPort> getInputPorts() {
+		return inputPorts;
 	}
-	
-	public void setSwithFabric(Integer swithFabric) {
+	public List<OutputPort> getOutputPorts() {
+		return outputPorts;
+	}
+
+	public void setSwitchFabric(String swithFabric){
 		this.swithFabric = swithFabric;
 	}
 
-	public void addInputList(List<String> stringList) {
-		inputList.add(stringList);
+	public void addInputPort(String portID, String size, String packageGenerationDelay, String dropProbability){
+		int dropProbabilityInt = Integer.parseInt(dropProbability);
+		checkProbability(dropProbabilityInt);
+		inputPorts.add(new InputPort(portID, Integer.parseInt(size), Integer.parseInt(packageGenerationDelay), dropProbabilityInt));
+	}
+
+	public void addOutputPort(String portID, String size, String packageFowardProbabily, String packageTransmissionDelay, String retransmissionProbabily){	
+		int packageFowardProbabilyInt = Integer.parseInt(packageFowardProbabily);
+		int retransmissionProbabilyInt = Integer.parseInt(retransmissionProbabily);
+		checkProbability(packageFowardProbabilyInt, retransmissionProbabilyInt);
+		outputPorts.add(new OutputPort(portID, Integer.parseInt(size), packageFowardProbabilyInt, Integer.parseInt(packageTransmissionDelay), retransmissionProbabilyInt));
 	}
 	
-	public void addOutputList(List<String> stringList) {
-		outputList.add(stringList);
+	private void checkProbability(int... probabilities) {
+		for (int probability : probabilities) {
+			if (probability < 0 || probability > 100) {
+				throw new IllegalArgumentException("Número " + probability + " não é uma probabilidade.");
+			}
+		}
 	}
+	
+	public void checkSumFowardProbability() {
+		int sum=0;
+		for (OutputPort outputPort : getOutputPorts()){
+			sum += outputPort.getPackageFowardProbability();
+		}
+		
+		if (sum != 100){
+			throw new ArithmeticException("Soma das probabilidades de repasse das portas de saída não da 100.");
+		}
+	}
+	
 }
