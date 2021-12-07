@@ -17,7 +17,7 @@ public class Program {
 		Utilities.setRunning(true);
 
 		InputPort inputPort = new InputPort("A_", 5, 100, 50);
-		OutputPort outputPort = new OutputPort("B-", 5, 100, 30, 50);
+		OutputPort outputPort = new OutputPort("B-", 5, 100, 30, 0);
 		
 		List<InputPort> inputList = new ArrayList<>();
 		List<OutputPort> outputList = new ArrayList<>();
@@ -35,7 +35,6 @@ public class Program {
 		
 		try {
 			TimeUnit.SECONDS.sleep(10L);
-			System.out.println("Parando...");
 			Utilities.setRunning(false);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

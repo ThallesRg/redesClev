@@ -29,7 +29,7 @@ public class Commutator extends Thread {
 	private int checkInputPortList(int currentPort) {
 		boolean foundAPackage = false;
 
-		while (!foundAPackage) {
+		while (!foundAPackage && Utilities.isRunning()) {
 			currentPort++;
 			if (currentPort >= inputPortList.size()) {
 				currentPort = 0;
@@ -60,16 +60,20 @@ public class Commutator extends Thread {
 	}
 
 	private void transportPackage(int inputPort, int outputPort) {
-		InputPort input = inputPortList.get(inputPort);
-		OutputPort output = outputPortList.get(outputPort);
 
-		Package pack = input.removePackage();
-		pack.updateTime();
-		if (output.insertPackageInList(pack)) {
-			FileHandler.writeLog(logSuccess, pack.toString());
-		} else {
-			discardPackage(pack, output);
+		if (Utilities.isRunning()) {
+			InputPort input = inputPortList.get(inputPort);
+			OutputPort output = outputPortList.get(outputPort);
+			
+			Package pack = input.removePackage();
+			pack.updateTime();
+			if (output.insertPackageInList(pack)) {
+				FileHandler.writeLog(logSuccess, pack.toString());
+			} else {
+				discardPackage(pack, output);
+			}
 		}
+		
 	}
 
 	private void discardPackage(Package pack, OutputPort port) {
@@ -111,10 +115,11 @@ public class Commutator extends Thread {
 
 		nonTreatedPackages();
 		// Fazer isso pra cada log
-		// FileHandler.closeLogFile( logNaoTratados );
+
 		FileHandler.closeLogFile(logSuccess);
 		FileHandler.closeLogFile(logNaoTratados);
-		System.out.println("Parando Buffer...");
+	
+		System.out.println("Parou Commutator");
 	}
 
 }

@@ -31,6 +31,7 @@ public class OutputPort implements Runnable{
 		this.logSuccess = FileHandler.createLogFile("log-enviados-com-sucesso-" + portID);
 		this.logRetransmitted = FileHandler.createLogFile("log-retransmitidos-" + portID);
 		this.logNonTreated = FileHandler.createLogFile("log-nao-tratados-fila-saida-" + portID);
+		this.random = new SplittableRandom();;
 	}
 	
 	public String getPortID() {
@@ -108,6 +109,7 @@ public class OutputPort implements Runnable{
 
 	private void transmitPackage() {
 		if (list.size() > 0) {
+			System.out.println("Transmitindo o pacote...");
 			Package pack = list.poll();
 			boolean isPackageTransmited = random.nextInt(1, 101) <= (100 - retransmissionProbability);
 			
@@ -142,8 +144,9 @@ public class OutputPort implements Runnable{
 	public void run() {
 
 		while(Utilities.isRunning()) {
+			System.out.println("Entrou no Run do Output...");
+			transmitPackage();
 			try {
-				transmitPackage();
 				Thread.sleep(packageTransmittionDelay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -153,7 +156,7 @@ public class OutputPort implements Runnable{
 		FileHandler.closeLogFile(logSuccess);
 		FileHandler.closeLogFile(logNonTreated);
 		FileHandler.closeLogFile(logRetransmitted);
-		System.out.println("Rodando...");
+		System.out.println("Parando Output");
 	}
 
 }
