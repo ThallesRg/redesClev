@@ -40,26 +40,36 @@ public class Program {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
+	
+			List<Thread> threads = new ArrayList<Thread>();
+			
+			Commutator commutator = new Commutator(inputList, outputList, 50);
+			threads.add(Thread(commutator));
+			
+			FileResponse fileResponse = FileHandler.readpecificationFile("file");
+			for (OutputPort outputPort : fileResponse.getOutputPorts()) {
+				threads.add(new Thread(outputPort));
+			}
+	
+			for (InputPort inputPort : fileResponse.getInputPorts()) {
+				threads.add(new Thread(inputPort));
+			}
+	
+			for (Thread thread : threads) {
+				thread.start();
+			}
 		*/
 
+		//System.out.println(file.getSwithFabric());
+		//System.out.println(file.getInputList());
+		//System.out.println(file.getOutputList());
 
-		List<Thread> threads = new ArrayList<Thread>();
-		FileResponse fileResponse = FileHandler.readpecificationFile("file");
-		for (OutputPort outputPort : fileResponse.getOutputPorts()) {
-			threads.add(new Thread(outputPort));
-		}
-
-		for (InputPort inputPort : fileResponse.getInputPorts()) {
-			threads.add(new Thread(inputPort));
-		}
-
-		for (Thread thread : threads) {
-			thread.start();
-		}
-
-		System.out.println(file.getSwithFabric());
-		System.out.println(file.getInputList());
-		System.out.println(file.getOutputList());
+		
+		FileResponse fileResponse =  FileHandler.readpecificationFile(args[0]);
+		System.out.println(fileResponse.getSwithFabric());
+		System.out.println(fileResponse.getInputPorts());
+		System.out.println(fileResponse.getOutputPorts());
 
 	}
 

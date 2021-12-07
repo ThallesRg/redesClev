@@ -141,6 +141,13 @@ public class OutputPort implements Runnable{
 
 	
 	@Override
+	public String toString() {
+		return "OutputPort [portID=" + portID + ", list=" + list + ", size=" + size + ", packageFowardProbability="
+				+ packageFowardProbability + ", packageTransmittionDelay=" + packageTransmittionDelay
+				+ ", retransmissionProbability=" + retransmissionProbability + "]";
+	}
+
+	@Override
 	public void run() {
 
 		while(Utilities.isRunning()) {
