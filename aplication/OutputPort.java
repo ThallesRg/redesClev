@@ -1,7 +1,5 @@
 package aplication;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SplittableRandom;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.io.BufferedWriter;
@@ -39,60 +37,13 @@ public class OutputPort implements Runnable{
 	}
 
 
-
-	public void setPortID(String portID) {
-		this.portID = portID;
-	}
-
-
-
 	public Integer getSize() {
 		return size;
 	}
 
-
-
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-
-
-
 	public Integer getPackageFowardProbability() {
 		return packageFowardProbability;
 	}
-
-
-
-	public void setPackageFowardProbability(Integer packageFowardProbability) {
-		this.packageFowardProbability = packageFowardProbability;
-	}
-
-
-
-	public Integer getPackageTransmittionDelay() {
-		return packageTransmittionDelay;
-	}
-
-
-
-	public void setPackageTransmittionDelay(Integer packageTransmittionDelay) {
-		this.packageTransmittionDelay = packageTransmittionDelay;
-	}
-
-
-
-	public Integer getRetransmissionProbability() {
-		return retransmissionProbability;
-	}
-
-
-
-	public void setRetransmissionProbability(Integer retransmissionProbability) {
-		this.retransmissionProbability = retransmissionProbability;
-	}
-
-
 
 	public ConcurrentLinkedQueue<Package> getList() {
 		return list;
@@ -109,7 +60,6 @@ public class OutputPort implements Runnable{
 
 	private void transmitPackage() {
 		if (list.size() > 0) {
-			System.out.println("Transmitindo o pacote...");
 			Package pack = list.poll();
 			boolean isPackageTransmited = random.nextInt(1, 101) <= (100 - retransmissionProbability);
 			
@@ -151,7 +101,6 @@ public class OutputPort implements Runnable{
 	public void run() {
 
 		while(Utilities.isRunning()) {
-			System.out.println("Entrou no Run do Output...");
 			transmitPackage();
 			try {
 				Thread.sleep(packageTransmittionDelay);

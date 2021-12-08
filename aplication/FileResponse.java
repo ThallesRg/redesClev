@@ -5,12 +5,12 @@ import java.util.List;
 
 public class FileResponse {
 
-    private String swithFabric;
+    private String switchFabric;
 	private List<InputPort> inputPorts = new ArrayList<>();
     private List<OutputPort> outputPorts = new ArrayList<>();
 	
-    public String getSwithFabric() {
-		return swithFabric;
+    public int getSwitchFabric() {
+		return Integer.parseInt(switchFabric);
 	}
 	public List<InputPort> getInputPorts() {
 		return inputPorts;
@@ -19,8 +19,8 @@ public class FileResponse {
 		return outputPorts;
 	}
 
-	public void setSwitchFabric(String swithFabric){
-		this.swithFabric = swithFabric;
+	public void setSwitchFabric(String switchFabric){
+		this.switchFabric = switchFabric;
 	}
 
 	public void addInputPort(String portID, String size, String packageGenerationDelay, String dropProbability){

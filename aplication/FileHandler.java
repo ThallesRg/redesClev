@@ -62,7 +62,7 @@ public class FileHandler {
                         fileResponse.addOutputPort(array[1], array[2], array[3], array[4], array[5]);
                         break;
                     default:
-                        throw new FileFormatException("Oii");
+                        throw new FileFormatException("Formato do arquivo");
                         //System.out.println("File with wrong formatting");
                         //wrongFormat = true;
                 }

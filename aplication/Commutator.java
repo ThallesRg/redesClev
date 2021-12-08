@@ -99,9 +99,7 @@ public class Commutator extends Thread {
 
 		while (Utilities.isRunning()) {
 			input = checkInputPortList(input);
-			System.out.println("Input: " + input);
 			output = chooseOutputPort();
-			System.out.println("Output: " + output);
 			transportPackage(input, output);
 
 			try {

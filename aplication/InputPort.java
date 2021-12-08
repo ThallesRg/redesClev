@@ -1,7 +1,5 @@
 package aplication;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SplittableRandom;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.lang.Thread;
@@ -102,7 +100,6 @@ public class InputPort implements Runnable{
 			try {
 				createPackage();
 				Thread.sleep(packageGenerationDelay);
-				System.out.println(list);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
