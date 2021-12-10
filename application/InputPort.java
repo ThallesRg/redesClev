@@ -23,7 +23,7 @@ public class InputPort implements Runnable{
 	/**
  	* Fila de pacotes
  	*/
-	private ConcurrentLinkedQueue<Package> list = new ConcurrentLinkedQueue<Package>();
+	private ConcurrentLinkedQueue<Package> queue = new ConcurrentLinkedQueue<Package>();
 	/**
  	* Tamanha máximo da fila de pacotes
  	*/
@@ -77,8 +77,8 @@ public class InputPort implements Runnable{
 	}
 
 
-	public ConcurrentLinkedQueue<Package> getList() {
-		return list;
+	public ConcurrentLinkedQueue<Package> getQueue() {
+		return queue;
 	}
 	
 
@@ -96,27 +96,19 @@ public class InputPort implements Runnable{
 		if (isPackageDiscarded) {
 			FileHandler.writeLog(logDiscarted, pack.toString());
 			return;
-		} else if (list.size() >= size) {
+		} else if (queue.size() >= size) {
 			FileHandler.writeLog(logQueue, pack.toString());
 			return;
 		}
-		insertPackage(pack);
+		queue.add(pack);
 		FileHandler.writeLog(logCreated, pack.toString());
-	}
-
-	/**
-    * Insere pacotes na fila
-    * @param pack pacote
-    */
-	private void insertPackage(Package pack) {
-		list.add(pack);
 	}
 
 	/**
     * Remove pacotes da fila
     */
 	public Package removePackage() {
-		return list.poll();
+		return queue.poll();
 	}
 	
 	/**

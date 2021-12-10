@@ -21,7 +21,7 @@ public class OutputPort implements Runnable{
 	/**
  	* Fila de pacotes
  	*/
-	private ConcurrentLinkedQueue<Package> list = new ConcurrentLinkedQueue<Package>();
+	private ConcurrentLinkedQueue<Package> queue = new ConcurrentLinkedQueue<Package>();
 	/**
  	* Tamanha máximo da fila de pacotes
  	*/
@@ -82,17 +82,17 @@ public class OutputPort implements Runnable{
 		return packageFowardProbability;
 	}
 
-	public ConcurrentLinkedQueue<Package> getList() {
-		return list;
+	public ConcurrentLinkedQueue<Package> getQueue() {
+		return queue;
 	}
 
 	/**
     * Insere pacotes na fila
     * @param pack pacote
     */
-	public boolean insertPackageInList(Package pack) {
-		if (size > list.size()) {
-			list.add(pack);
+	public boolean insertPackageInQueue(Package pack) {
+		if (size > queue.size()) {
+			queue.add(pack);
 			return true;
 		}
 		return false;
@@ -102,8 +102,8 @@ public class OutputPort implements Runnable{
     * Transmite pacote da fila
     */
 	private void transmitPackage() {
-		if (list.size() > 0) {
-			Package pack = list.poll();
+		if (queue.size() > 0) {
+			Package pack = queue.poll();
 			boolean isPackageTransmited = random.nextInt(1, 101) <= (100 - retransmissionProbability);
 			
 			if(isPackageTransmited) {
@@ -136,7 +136,7 @@ public class OutputPort implements Runnable{
     * Cria o log dos pacotes nas filas das portas de entradas não tratados
     */
 	private void nonTreatedPackages() {
-		for(Package pack : list) {
+		for(Package pack : queue) {
 			FileHandler.writeLog(logNonTreated, pack.toString());
 		}
 	}

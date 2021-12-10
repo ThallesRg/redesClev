@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import application.exception.FileFormatException;
 
 /**
-* A classe FileHandler é responsável por gerenciar os arquivos da pasta 'logs' e 'resources'
+* A classe FileHandler é responsável por gerenciar os arquivos da pasta 'logs' e 'input'
 * 
 * @author Luiz Felipe Triques Moraes
 * @author Renata Rona Garib
@@ -22,7 +22,7 @@ import application.exception.FileFormatException;
 public class FileHandler {
 
     /**
-     * Método responsável por receber o nome de um arquivo, encontra-lo na pasta 'resources' e passar os dados para a classe FileResponse trata-la
+     * Método responsável por receber o nome de um arquivo, encontra-lo na pasta 'input' e passar os dados para a classe FileResponse trata-la
      * @param name variável contendo o nome do arquivo a ser utilizado
      * @return o método retorna um dado do tipo FileResponse com o tratamento já correto
      */
@@ -32,7 +32,7 @@ public class FileHandler {
 
         try {
 
-            FileReader fileReader = new FileReader("./resources/" + name + ".txt");
+            FileReader fileReader = new FileReader("./input/" + name + ".txt");
 
             String line;
 

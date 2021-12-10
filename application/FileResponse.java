@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* A classe FileResponse é responsável por formatar corretamente o arquivo da pasta 'resources'
+* A classe FileResponse é responsável por formatar corretamente o arquivo da pasta 'input'
 * 
 * @author Luiz Felipe Triques Moraes
 * @author Renata Rona Garib

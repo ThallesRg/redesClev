@@ -13,7 +13,7 @@ import java.io.BufferedWriter;
 * @author Thalles Raphael Guimarães
 * 
 */
-public class Commutator extends Thread {
+public class Commutator implements Runnable{
 
 	/**
  	* Lista de todas as portas de entrada
@@ -65,7 +65,7 @@ public class Commutator extends Thread {
 				currentPort = 0;
 			}
 			InputPort port = inputPortList.get(currentPort);
-			if (!port.getList().isEmpty()) {
+			if (!port.getQueue().isEmpty()) {
 				foundAPackage = true;
 			}
 		}
@@ -106,7 +106,7 @@ public class Commutator extends Thread {
 			
 			Package pack = input.removePackage();
 			pack.updateTime();
-			if (output.insertPackageInList(pack)) {
+			if (output.insertPackageInQueue(pack)) {
 				FileHandler.writeLog(logSuccess, pack.toString());
 			} else {
 				discardPackage(pack, output);
@@ -132,7 +132,7 @@ public class Commutator extends Thread {
     */
 	private void nonTreatedPackages() {
 		for (InputPort port : inputPortList) {
-			for (Package pack : port.getList()) {
+			for (Package pack : port.getQueue()) {
 				FileHandler.writeLog(logNaoTratados, pack.toString());
 			}
 		}
